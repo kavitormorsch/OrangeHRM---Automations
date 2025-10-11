@@ -31,3 +31,7 @@ Cypress.Commands.add("login", (username, password) => {
 
     cy.get(".oxd-button").contains("Login").click()
 })
+
+Cypress.Commands.add("getByInputGroup", (inputName) => {
+    return cy.contains(".oxd-input-group", inputName)
+})
