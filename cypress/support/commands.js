@@ -25,13 +25,16 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add("login", (username, password) => {
-    cy.visit("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
-    cy.get(`[name='username']`).type(username)
-    cy.get(`[name='password']`).type(password)
+  cy.visit(
+    "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
+  );
+  cy.get(`[name='username']`).type(username);
+  cy.get(`[name='password']`).type(password);
 
-    cy.get(".oxd-button").contains("Login").click()
-})
+  cy.get(".oxd-button").contains("Login").click();
+});
 
 Cypress.Commands.add("getByInputGroup", (inputName) => {
-    return cy.contains(".oxd-input-group", inputName)
-})
+  var regEx = new RegExp(`^${inputName}$`);
+  return cy.contains(".oxd-label", regEx).parents(".oxd-input-group");
+});

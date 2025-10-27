@@ -3,13 +3,10 @@ describe('template spec', () => {
     cy.visit("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
   })
   it('Sucessfully logs in', () => {
-    cy.get(`[name='username']`).type("Admin")
-    cy.get(`[name='password']`).type("admin123")
-
-    cy.get(".oxd-button").contains("Login").click()
+    cy.login(Cypress.env("userLogins").admin.username, Cypress.env("userLogins").admin.password)
   })
 
-  it.only('Should display error message for each field', () => {
+  it('Should display error message for each field', () => {
     cy.get(`[name='username']`).type(" ")
     cy.contains(".oxd-input-group", "Username").contains(".oxd-text", "Required")
     cy.get(`[name='password']`).type(" ")
