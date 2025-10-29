@@ -68,7 +68,7 @@ describe("Tests in regards to the Admin tab of the site", () => {
     });
   });
 
-  it.skip("Edits a login", () => {
+  it("Edits a login", () => {
     rand = Math.floor(Math.random() * 10000);
     var newUsername = "reallygoodname." + rand;
     cy.get(".oxd-table-row").each(($row, index, rowArray) => {
@@ -133,6 +133,9 @@ describe("Tests in regards to the Admin tab of the site", () => {
     cy.get(".orangehrm-container")
       .find(".oxd-table-row")
       .should("contain", newUsername);
+    cy.then(() => {
+      username = newUsername;
+    })
   });
 
   it("Filters the records of users", () => {
