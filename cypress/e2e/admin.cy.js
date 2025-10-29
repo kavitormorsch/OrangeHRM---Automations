@@ -183,10 +183,7 @@ describe("Tests in regards to the Admin tab of the site", () => {
     cy.contains(".oxd-button", "Search").click();
     cy.get(".oxd-table-row").each(($row, arrayLength) => {
       console.log($row.parent().attr("class"), arrayLength);
-      if (
-        $row.parent().attr("class") === ".oxd-table-header" &&
-        arrayLength === 0
-      )
+      if (arrayLength === 0)
         return false;
       cy.wrap($row).then(() => {
         cy.get(".oxd-table-cell").eq(3).should("contain", employeeName);
