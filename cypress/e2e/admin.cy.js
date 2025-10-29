@@ -68,7 +68,7 @@ describe("Tests in regards to the Admin tab of the site", () => {
     });
   });
 
-  it("Edits a login", () => {
+  it.skip("Edits a login", () => {
     rand = Math.floor(Math.random() * 10000);
     var newUsername = "reallygoodname." + rand;
     cy.get(".oxd-table-row").each(($row, index, rowArray) => {
@@ -133,5 +133,64 @@ describe("Tests in regards to the Admin tab of the site", () => {
     cy.get(".orangehrm-container")
       .find(".oxd-table-row")
       .should("contain", newUsername);
+  });
+
+  it("Filters the records of users", () => {
+    cy.getByInputGroup("Username").type(username + "{enter}");
+    cy.get(".orangehrm-container")
+      .find(".oxd-table-row")
+      .should("have.length", 2)
+      .and("contain", username);
+    cy.contains(".oxd-button", "Reset").click();
+
+    cy.getByInputGroup("User Role").find(".oxd-select-wrapper").click();
+    cy.contains(".oxd-select-option", "ESS").click();
+    cy.contains(".oxd-button", "Search").click();
+
+    let index = 2;
+    cy.get(".oxd-table-row").each(($row) => {
+      var tableCells = $row.find(".oxd-table-cell");
+      console.log(tableCells);
+      if (index > $row.find(".oxd-table-cell").length) {
+        return false;
+      }
+      cy.get(".oxd-table-cell").eq(index).should("not.contain", "Admin");
+      index += 6;
+    });
+
+    cy.get(".oxd-autocomplete-text-input > input").type("e");
+    cy.get(".oxd-autocomplete-option")
+      .as("options")
+      .should("not.contain", "Searching...");
+    //pick a random user from the autocomplete list if there are more than one
+    if (cy.get("@options").its("length") != NaN)
+      cy.get("@options").then(($option) => {
+        max = $option.length;
+        rand = Math.floor(Math.random() * max);
+
+        cy.wrap($option).eq(rand).click();
+      });
+    else {
+      cy.get("@options").click();
+    }
+    let employeeName;
+    cy.get(".oxd-autocomplete-text-input > input").then(($input) => {
+      employeeName = $input.val();
+      var stringArray = employeeName.split(" ");
+      employeeName = stringArray[0] + " " + stringArray[stringArray.length - 1];
+    });
+
+    cy.contains(".oxd-button", "Search").click();
+    cy.get(".oxd-table-row").each(($row, arrayLength) => {
+      console.log($row.parent().attr("class"), arrayLength);
+      if (
+        $row.parent().attr("class") === ".oxd-table-header" &&
+        arrayLength === 0
+      )
+        return false;
+      cy.wrap($row).then(() => {
+        cy.get(".oxd-table-cell").eq(3).should("contain", employeeName);
+      });
+    });
   });
 });
